@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = "0xA9dc46d5aCCb154a89C750D0F003D8aF552Ba2De";
+export const CONTRACT_ADDRESS = "0x587B4Ef19881B9b47F0d37800075Fc2725dffBB0";
 
 export const transformCharacterData = (characterData) => {
   //for formatting character data in state
@@ -6,6 +6,7 @@ export const transformCharacterData = (characterData) => {
     name: characterData.name,
     imageURI: characterData.imageURI,
     hp: characterData.hp.toNumber(),
+    maxHp: characterData.maxHp.toNumber(),
     attackDamage: characterData.attackDamage.toNumber(),
   };
 };

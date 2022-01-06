@@ -20,6 +20,7 @@ contract MyEpicGame is ERC721 {
         string name;
         string imageURI;
         uint256 hp;
+        uint256 maxHp;
         uint256 attackDamage;
     }
 
@@ -84,6 +85,7 @@ contract MyEpicGame is ERC721 {
                     name: characterNames[i],
                     imageURI: characterImageURIs[i],
                     hp: characterHp[i],
+                    maxHp: characterHp[i],
                     attackDamage: characterAttackDmg[i]
                 })
             );
@@ -116,6 +118,7 @@ contract MyEpicGame is ERC721 {
             name: defaultCharacters[_characterIndex].name,
             imageURI: defaultCharacters[_characterIndex].imageURI,
             hp: defaultCharacters[_characterIndex].hp,
+            maxHp: defaultCharacters[_characterIndex].maxHp,
             attackDamage: defaultCharacters[_characterIndex].attackDamage
         });
 
@@ -146,6 +149,7 @@ contract MyEpicGame is ERC721 {
         ];
 
         string memory strHp = Strings.toString(charAttributes.hp);
+        string memory strMaxHp = Strings.toString(charAttributes.maxHp);
         string memory strAttackDamage = Strings.toString(
             charAttributes.attackDamage
         );
@@ -160,6 +164,8 @@ contract MyEpicGame is ERC721 {
                 charAttributes.imageURI,
                 '", "attributes": [ { "trait_type": "Health Points", "value": ',
                 strHp,
+                '}, { "trait_type": "Health Points", "value": ',
+                strMaxHp,
                 '}, { "trait_type": "Attack Damage", "value": ',
                 strAttackDamage,
                 "} ]}"

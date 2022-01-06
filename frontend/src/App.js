@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import twitterLogo from "./assets/twitter-logo.svg";
 import "./App.css";
+
 import SelectCharacter from "./Components/SelectCharacter/SelectCharacter";
+import Arena from "./Components/Arena/Arena";
 
 import { CONTRACT_ADDRESS, transformCharacterData } from "./constants";
 import myEpicGame from "./utils/MyEpicGame.json"; //ABI
@@ -64,6 +66,17 @@ const App = () => {
     }
   };
 
+  //Making sure we're conncted to Rinkeby testnet
+  const checkNetwork = async () => {
+    try {
+      if (window.ethereum.networkVersion !== "4") {
+        alert("Please connect to Rinkeby!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //Check wallet when page loads
   useEffect(() => {
     checkWalletConnection();
@@ -118,6 +131,10 @@ const App = () => {
     //If wallet is connected AND user doesn't have a character NFT yet -- show select character screen
     else if (currentAccount && !characterNFT) {
       return <SelectCharacter setCharacterNFT={setCharacterNFT} />;
+    }
+    //If we have a wallet connect and a character, then we can enter the arena
+    else if (currentAccount && characterNFT) {
+      return <Arena characterNFT={characterNFT} />;
     }
   };
 
