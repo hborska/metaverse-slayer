@@ -17,6 +17,7 @@ const App = () => {
   //State variables
   const [currentAccount, setCurrentAccount] = useState(null);
   const [characterNFT, setCharacterNFT] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   //Checking to make sure wallet is connected
   const checkWalletConnection = async () => {
@@ -134,7 +135,9 @@ const App = () => {
     }
     //If we have a wallet connect and a character, then we can enter the arena
     else if (currentAccount && characterNFT) {
-      return <Arena characterNFT={characterNFT} />;
+      return (
+        <Arena characterNFT={characterNFT} setCharacterNFT={setCharacterNFT} />
+      );
     }
   };
 

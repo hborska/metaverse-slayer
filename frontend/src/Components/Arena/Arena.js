@@ -5,9 +5,10 @@ import myEpicGame from "../../utils/MyEpicGame.json";
 import "./Arena.css";
 
 //Passing in our characterNFT metadata
-const Arena = ({ characterNFT }) => {
+const Arena = ({ characterNFT, setCharacterNFT }) => {
   const [gameContract, setGameContract] = useState(null);
   const [boss, setBoss] = useState(null);
+  const [attackState, setAttackState] = useState(""); //for attacking animations
 
   //Setting our game contract
   useEffect(() => {
@@ -41,13 +42,63 @@ const Arena = ({ characterNFT }) => {
     }
   }, [gameContract]);
 
-  const runAttackAction = async () => {};
+  const runAttackAction = async () => {
+    try {
+      if (gameContract) {
+        setAttackState("attacking");
+        console.log("Attacking boss...");
+        const attackTxn = await gameContract.attackBoss();
+        await attackTxn.wait();
+        console.log("attackTxn:", attackTxn);
+        setAttackState("hit");
+      }
+    } catch (error) {
+      console.error("Error attacking boss:", error);
+      setAttackState("");
+    }
+  };
+
+  //Useeffect for when boss is attacked, updates HP of player and boss
+  useEffect(() => {
+    const fetchBoss = async () => {
+      const bossTxn = await gameContract.getBigBoss();
+      console.log("Boss:", bossTxn);
+      setBoss(transformCharacterData(bossTxn));
+    };
+
+    const onAttackComplete = (newBossHp, newPlayerHp) => {
+      const bossHp = newBossHp.toNumber();
+      const playerHp = newPlayerHp.toNumber();
+
+      console.log(`AttackComplete: Boss Hp: ${bossHp} Player Hp: ${playerHp}`);
+
+      setBoss((prevState) => {
+        return { ...prevState, hp: bossHp };
+      });
+
+      setCharacterNFT((prevState) => {
+        return { ...prevState, hp: playerHp };
+      });
+    };
+
+    if (gameContract) {
+      fetchBoss();
+      gameContract.on("AttackComplete", onAttackComplete);
+    }
+
+    return () => {
+      //Clean up event when component is removed
+      if (gameContract) {
+        gameContract.off("AttackComplete", onAttackComplete);
+      }
+    };
+  }, [gameContract]);
 
   return (
     <div className="arena-container">
       {boss && (
         <div className="boss-container">
-          <div className={`boss-content`}>
+          <div className={`boss-content ${attackState}`}>
             <h2>🔥 {boss.name} 🔥</h2>
             <div className="image-content">
               <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
