@@ -86,6 +86,7 @@ const App = () => {
   //Check wallet when page loads
   useEffect(() => {
     setIsLoading(true);
+    checkNetwork();
     checkWalletConnection();
   }, []);
 
