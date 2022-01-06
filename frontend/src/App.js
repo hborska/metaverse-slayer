@@ -5,6 +5,7 @@ import "./App.css";
 
 import SelectCharacter from "./Components/SelectCharacter/SelectCharacter";
 import Arena from "./Components/Arena/Arena";
+import LoadingIndicator from "./Components/LoadingIndicator/LoadingIndicator";
 
 import { CONTRACT_ADDRESS, transformCharacterData } from "./constants";
 import myEpicGame from "./utils/MyEpicGame.json"; //ABI
@@ -12,6 +13,8 @@ import myEpicGame from "./utils/MyEpicGame.json"; //ABI
 // Constants
 const TWITTER_HANDLE = "_buildspace";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
+const PERSONAL_TWITTER_HANDLE = "@Henry89421";
+const PERSONAL_TWITTER_LINK = `https://twitter.com/${PERSONAL_TWITTER_HANDLE}`;
 
 const App = () => {
   //State variables
@@ -25,6 +28,7 @@ const App = () => {
 
     if (!ethereum) {
       console.log("Make sure you have metamask!");
+      setIsLoading(false);
       return;
     } else {
       console.log("We have the ethereum object", ethereum);
@@ -47,6 +51,7 @@ const App = () => {
     } else {
       console.log("No authorized account found");
     }
+    setIsLoading(false);
   };
 
   //Connecting wallet
@@ -80,6 +85,7 @@ const App = () => {
 
   //Check wallet when page loads
   useEffect(() => {
+    setIsLoading(true);
     checkWalletConnection();
   }, []);
 
@@ -103,6 +109,7 @@ const App = () => {
       } else {
         console.log("No character NFT found");
       }
+      setIsLoading(false);
     };
 
     if (currentAccount) {
@@ -112,6 +119,11 @@ const App = () => {
   }, [currentAccount]);
 
   const renderContent = () => {
+    //App is loading state
+    if (isLoading) {
+      return <LoadingIndicator />;
+    }
+
     //User account not connected yet -- show connect wallet
     if (!currentAccount) {
       return (
@@ -156,7 +168,14 @@ const App = () => {
             href={TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
-          >{`built with @${TWITTER_HANDLE}`}</a>
+          >{`built on @${TWITTER_HANDLE}`}</a>
+          <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
+          <a
+            className="footer-text"
+            href={PERSONAL_TWITTER_LINK}
+            target="_blank"
+            rel="noreferrer"
+          >{`Personal Twitter ${PERSONAL_TWITTER_HANDLE}`}</a>
         </div>
       </div>
     </div>
